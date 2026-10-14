@@ -1,0 +1,11 @@
+# Ödev dokümanı depoya gitmez
+*.pdf
+
+# Bağımlılıklar ve build çıktıları
+node_modules/
+dist/
+
+# Editör / sistem
+.DS_Store
+Thumbs.db
+.vercel

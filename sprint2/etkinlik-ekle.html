@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etkinlik Ekle - Kampüs Etkinlikleri</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="stylesheet" href="css/2211012707.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <h1>Etkinlik Ekle</h1>
+      <p class="subtitle">Fakültede yeni bir etkinlik planlayın.</p>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="etkinlik-ekle.html" class="active">Ekle</a>
+        <a href="etkinlik-guncelle.html">Güncelle</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <p class="form-info">Yıldızlı (*) alanlar zorunludur.</p>
+
+      <form action="#" method="get">
+        <div class="form-grup">
+          <label for="ad">Etkinlik Adı *</label>
+          <input type="text" id="ad" name="ad" placeholder="Örn. Web Tasarım Atölyesi" required>
+        </div>
+
+        <div class="form-grup">
+          <label for="kategori">Kategori *</label>
+          <select id="kategori" name="kategori" required>
+            <option value="">Seçiniz ▾</option>
+            <option value="Seminer">Seminer</option>
+            <option value="Atölye">Atölye</option>
+            <option value="Söyleşi">Söyleşi</option>
+            <option value="Konser">Konser</option>
+          </select>
+        </div>
+
+        <div class="form-grup">
+          <label for="tarih">Tarih *</label>
+          <input type="date" id="tarih" name="tarih" required>
+        </div>
+
+        <div class="form-grup">
+          <label for="saat">Saat *</label>
+          <input type="time" id="saat" name="saat" required>
+        </div>
+
+        <div class="form-grup">
+          <label for="yer">Yer *</label>
+          <input type="text" id="yer" name="yer" placeholder="Örn. A Blok Konferans Salonu" required>
+        </div>
+
+        <div class="form-grup">
+          <label for="aciklama">Açıklama</label>
+          <textarea id="aciklama" name="aciklama" rows="4" placeholder="Etkinlik hakkında kısa bilgi..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>Mehmet Ali Can Coşkun · 2211012707 · 2026</p>
+  </footer>
+
+</body>
+</html>
