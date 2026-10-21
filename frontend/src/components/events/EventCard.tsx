@@ -3,10 +3,10 @@ import { formatDate } from "../../utils/format-date";
 
 interface EventCardProps {
   event: CampusEvent;
-  onDetail: (id: string) => void;
+  onShowDetail: (id: string) => void;
 }
 
-function EventCard({ event, onDetail }: EventCardProps) {
+function EventCard({ event, onShowDetail }: EventCardProps) {
   return (
     <article className="kart">
       <h2>{event.title}</h2>
@@ -22,7 +22,7 @@ function EventCard({ event, onDetail }: EventCardProps) {
         className="detay-link"
         onClick={(e) => {
           e.preventDefault();
-          onDetail(event.id);
+          onShowDetail(event.id);
         }}
       >
         Detayları gör

@@ -5,6 +5,7 @@ import type { PageName } from "./types/page";
 import { events } from "./data/events";
 import { filterByCategory, findEventById, searchEvents } from "./utils/filter-events";
 import Header from "./components/layout/Header";
+import Navigation from "./components/layout/Navigation";
 import Footer from "./components/layout/Footer";
 import EventList from "./components/events/EventList";
 import EventFilter from "./components/events/EventFilter";
@@ -46,19 +47,19 @@ function App() {
 
   useEffect(() => {
     document.title = `Kampüs Etkinlikleri — ${titles[page]}`;
-  }, [titles[page]]);
-
-  const showDetail = (id: string) => go("detail", id);
+  }, [titles, page]);
 
   return (
     <>
-      <Header title={titles[page]} subtitle={subtitles[page]} current={page} onNavigate={go} />
+      <Header title={titles[page]} text={subtitles[page]}>
+        <Navigation current={page} onNavigate={go} />
+      </Header>
 
       <main>
         {page === "home" && (
           <section>
             <h2 className="section-title">Yaklaşan 2 Etkinlik</h2>
-            <EventList events={upcoming} onDetail={showDetail} />
+            <EventList events={upcoming} onShowDetail={(id) => go("detail", id)} />
             <div className="all-events-btn-wrapper">
               <button type="button" className="btn btn-primary" onClick={() => go("events")}>
                 Tüm etkinlikleri gör
@@ -81,16 +82,24 @@ function App() {
                 ? "Aramanıza uygun etkinlik bulunamadı."
                 : `${filtered.length} etkinlik listeleniyor.`}
             </p>
-            <EventList events={filtered} onDetail={showDetail} />
+            <EventList
+              events={filtered}
+              onShowDetail={(id) => go("detail", id)}
+              emptyText="Aramanıza uygun etkinlik bulunamadı."
+            />
           </>
         )}
 
         {page === "detail" && (
-          <EventDetail event={selected} onBack={() => go("events")} onUpdate={(id) => go("update", id)} />
+          <EventDetail
+            event={selected}
+            onBack={() => go("events")}
+            onEdit={(id) => go("update", id)}
+          />
         )}
 
         {(page === "add" || page === "update") && (
-          <EventForm mode={page} categories={categories} />
+          <EventForm onSubmit={() => window.scrollTo(0, 0)} />
         )}
       </main>
 

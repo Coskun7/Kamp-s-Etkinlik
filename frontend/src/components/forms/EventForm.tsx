@@ -1,18 +1,21 @@
-import type { Category } from "../../types/campus-event";
-
 interface EventFormProps {
-  mode: "add" | "update";
-  categories: Category[];
+  onSubmit: () => void;
 }
 
-function EventForm({ mode, categories }: EventFormProps) {
+function EventForm({ onSubmit }: EventFormProps) {
   return (
     <div className="form-container">
       <p className="form-info">
         Yıldızlı (*) alanlar zorunludur. Bu sprintte form sadece görünümdür; kaydetme yapılmaz.
       </p>
 
-      <form className="form" onSubmit={(e) => e.preventDefault()}>
+      <form
+        className="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
         <div className="form-grup">
           <label htmlFor="title">Etkinlik Adı *</label>
           <input type="text" id="title" name="title" maxLength={80} placeholder="Örn. Web Tasarım Atölyesi" />
@@ -22,11 +25,10 @@ function EventForm({ mode, categories }: EventFormProps) {
           <label htmlFor="category">Kategori *</label>
           <select id="category" name="category">
             <option value="">Seçiniz</option>
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
+            <option value="Seminer">Seminer</option>
+            <option value="Atölye">Atölye</option>
+            <option value="Söyleşi">Söyleşi</option>
+            <option value="Yarışma">Yarışma</option>
           </select>
         </div>
 
@@ -56,7 +58,7 @@ function EventForm({ mode, categories }: EventFormProps) {
         </div>
 
         <button type="submit" className="btn btn-primary">
-          {mode === "update" ? "Güncelle" : "Kaydet"}
+          Kaydet
         </button>
       </form>
     </div>

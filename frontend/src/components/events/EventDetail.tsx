@@ -4,10 +4,10 @@ import { formatDate } from "../../utils/format-date";
 interface EventDetailProps {
   event: CampusEvent | undefined;
   onBack: () => void;
-  onUpdate: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
-function EventDetail({ event, onBack, onUpdate }: EventDetailProps) {
+function EventDetail({ event, onBack, onEdit }: EventDetailProps) {
   if (!event) {
     return (
       <div className="hata-kutusu">
@@ -59,7 +59,7 @@ function EventDetail({ event, onBack, onUpdate }: EventDetailProps) {
         <button type="button" className="btn btn-secondary" onClick={onBack}>
           ← Listeye dön
         </button>
-        <button type="button" className="btn btn-primary" onClick={() => onUpdate(event.id)}>
+        <button type="button" className="btn btn-primary" onClick={() => onEdit(event.id)}>
           Bu etkinliği güncelle
         </button>
       </div>
