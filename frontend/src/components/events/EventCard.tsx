@@ -1,0 +1,34 @@
+import type { CampusEvent } from "../../types/campus-event";
+import { formatDate } from "../../utils/format-date";
+
+interface EventCardProps {
+  event: CampusEvent;
+  onDetail: (id: string) => void;
+}
+
+function EventCard({ event, onDetail }: EventCardProps) {
+  return (
+    <article className="kart">
+      <h2>{event.title}</h2>
+      <p className="kategori">{event.category}</p>
+      <p className="tarih-saat">
+        Tarih: <time dateTime={`${event.date}T${event.time}`}>{formatDate(event.date)}, {event.time}</time>
+      </p>
+      <p className="yer">Yer: {event.location}</p>
+      <p className="kontenjan">Kontenjan: {event.capacity} kişi</p>
+      <p className="aciklama">{event.description}</p>
+      <a
+        href="#"
+        className="detay-link"
+        onClick={(e) => {
+          e.preventDefault();
+          onDetail(event.id);
+        }}
+      >
+        Detayları gör
+      </a>
+    </article>
+  );
+}
+
+export default EventCard;

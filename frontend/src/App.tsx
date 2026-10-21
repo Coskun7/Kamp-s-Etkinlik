@@ -1,23 +1,15 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import type { CampusEvent, Category } from "./types/campus-event";
+import type { Category } from "./types/campus-event";
+import type { PageName } from "./types/page";
 import { events } from "./data/events";
-import {
-  filterByCategory,
-  findEventById,
-  searchEvents,
-} from "./utils/filter-events";
-
-type PageName = "home" | "events" | "detail" | "add" | "update";
-
-const menu: { page: PageName; label: string }[] = [
-  { page: "home", label: "Ana Sayfa" },
-  { page: "events", label: "Etkinlikler" },
-  { page: "add", label: "Ekle" },
-];
-
-const formatDate = (d: string) =>
-  new Date(`${d}T00:00`).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
+import { filterByCategory, findEventById, searchEvents } from "./utils/filter-events";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import EventList from "./components/events/EventList";
+import EventFilter from "./components/events/EventFilter";
+import EventDetail from "./components/events/EventDetail";
+import EventForm from "./components/forms/EventForm";
 
 const categories = [...new Set(events.map((e) => e.category))];
 
@@ -33,13 +25,8 @@ function App() {
     window.scrollTo(0, 0);
   }
 
-  // Ana sayfa: en yakın 2 etkinlik
   const upcoming = [...events].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
-
-  // Etkinlikler: filtreli liste state değil, her çizimde hesaplanır
   const filtered = filterByCategory(searchEvents(events, searchText), category);
-
-  // Detay / güncelle: seçili etkinlik
   const selected = selectedId ? findEventById(events, selectedId) : undefined;
 
   const titles: Record<PageName, string> = {
@@ -56,68 +43,22 @@ function App() {
     add: "Fakültede yeni bir etkinlik planlayın.",
     update: "Mevcut etkinlik bilgilerini güncelleyin.",
   };
-  const title = titles[page];
 
-  // Side-effect: sekme başlığı
   useEffect(() => {
-    document.title = `Kampüs Etkinlikleri — ${title}`;
-  }, [title]);
+    document.title = `Kampüs Etkinlikleri — ${titles[page]}`;
+  }, [titles[page]]);
 
-  function renderCard(event: CampusEvent) {
-    return (
-      <article className="kart" key={event.id}>
-        <h2>{event.title}</h2>
-        <p className="kategori">{event.category}</p>
-        <p className="tarih-saat">
-          Tarih: <time dateTime={`${event.date}T${event.time}`}>{formatDate(event.date)}, {event.time}</time>
-        </p>
-        <p className="yer">Yer: {event.location}</p>
-        <p className="kontenjan">Kontenjan: {event.capacity} kişi</p>
-        <p className="aciklama">{event.description}</p>
-        <a
-          href="#"
-          className="detay-link"
-          onClick={(e) => {
-            e.preventDefault();
-            go("detail", event.id);
-          }}
-        >
-          Detayları gör
-        </a>
-      </article>
-    );
-  }
+  const showDetail = (id: string) => go("detail", id);
 
   return (
     <>
-      <header className="site-baslik">
-        <div className="header-container">
-          <h1>{title}</h1>
-          <p className="subtitle">{subtitles[page]}</p>
-          <nav className="menu">
-            {menu.map((item) => (
-              <a
-                key={item.page}
-                href="#"
-                className={page === item.page ? "active" : undefined}
-                aria-current={page === item.page ? "page" : undefined}
-                onClick={(e) => {
-                  e.preventDefault();
-                  go(item.page);
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </header>
+      <Header title={titles[page]} subtitle={subtitles[page]} current={page} onNavigate={go} />
 
       <main>
         {page === "home" && (
           <section>
             <h2 className="section-title">Yaklaşan 2 Etkinlik</h2>
-            <section className="etkinlik-listesi">{upcoming.map(renderCard)}</section>
+            <EventList events={upcoming} onDetail={showDetail} />
             <div className="all-events-btn-wrapper">
               <button type="button" className="btn btn-primary" onClick={() => go("events")}>
                 Tüm etkinlikleri gör
@@ -128,160 +69,32 @@ function App() {
 
         {page === "events" && (
           <>
-            <form className="filtre" onSubmit={(e) => e.preventDefault()}>
-              <div className="filtre-grup">
-                <label htmlFor="arama">Etkinlik ara</label>
-                <input
-                  type="search"
-                  id="arama"
-                  placeholder="Örn. atölye, kariyer"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-              </div>
-              <div className="filtre-grup">
-                <label htmlFor="kategori-filtre">Kategori</label>
-                <select
-                  id="kategori-filtre"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as Category | "")}
-                >
-                  <option value="">Tümü</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </form>
-
+            <EventFilter
+              searchText={searchText}
+              category={category}
+              categories={categories}
+              onSearchChange={setSearchText}
+              onCategoryChange={setCategory}
+            />
             <p id="sonuc">
               {filtered.length === 0
                 ? "Aramanıza uygun etkinlik bulunamadı."
                 : `${filtered.length} etkinlik listeleniyor.`}
             </p>
-
-            <section className="etkinlik-listesi">{filtered.map(renderCard)}</section>
+            <EventList events={filtered} onDetail={showDetail} />
           </>
         )}
 
-        {page === "detail" && !selected && (
-          <div className="hata-kutusu">
-            <p>Böyle bir etkinlik yok. Listeden bir etkinlik seçin.</p>
-            <div className="buton-grubu">
-              <button type="button" className="btn btn-secondary" onClick={() => go("events")}>
-                ← Listeye dön
-              </button>
-            </div>
-          </div>
-        )}
-
-        {page === "detail" && selected && (
-          <article className="detay-karti">
-            <div className={selected.image ? "detay-grid" : undefined}>
-              {selected.image && (
-                <figure className="afis-cerceve">
-                  <img className="afis-resim" src={selected.image} alt={`${selected.title} afişi`} />
-                  <figcaption>{selected.title} afişi</figcaption>
-                </figure>
-              )}
-
-              <div className="kunye-sutun">
-                <h2>Etkinlik Künyesi</h2>
-                <dl className="kunye-listesi">
-                  <dt>Tarih</dt>
-                  <dd>
-                    <time dateTime={`${selected.date}T${selected.time}`}>
-                      {formatDate(selected.date)}, {selected.time}
-                    </time>
-                  </dd>
-                  <dt>Yer</dt>
-                  <dd>{selected.location}</dd>
-                  <dt>Kategori</dt>
-                  <dd>{selected.category}</dd>
-                  <dt>Kontenjan</dt>
-                  <dd>{selected.capacity} kişi</dd>
-                </dl>
-              </div>
-            </div>
-
-            <section className="aciklama-alani">
-              <h2>Açıklama</h2>
-              <p>{selected.description}</p>
-            </section>
-
-            <div className="detay-eylemler">
-              <button type="button" className="btn btn-secondary" onClick={() => go("events")}>
-                ← Listeye dön
-              </button>
-              <button type="button" className="btn btn-primary" onClick={() => go("update", selected.id)}>
-                Bu etkinliği güncelle
-              </button>
-            </div>
-          </article>
+        {page === "detail" && (
+          <EventDetail event={selected} onBack={() => go("events")} onUpdate={(id) => go("update", id)} />
         )}
 
         {(page === "add" || page === "update") && (
-          <div className="form-container">
-            <p className="form-info">
-              Yıldızlı (*) alanlar zorunludur. Bu sprintte form sadece görünümdür; kaydetme yapılmaz.
-            </p>
-
-            <form className="form" onSubmit={(e) => e.preventDefault()}>
-              <div className="form-grup">
-                <label htmlFor="title">Etkinlik Adı *</label>
-                <input type="text" id="title" name="title" maxLength={80} placeholder="Örn. Web Tasarım Atölyesi" />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="category">Kategori *</label>
-                <select id="category" name="category">
-                  <option value="">Seçiniz</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="date">Tarih *</label>
-                <input type="date" id="date" name="date" />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="time">Saat *</label>
-                <input type="time" id="time" name="time" />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="location">Yer *</label>
-                <input type="text" id="location" name="location" placeholder="Örn. A Blok Konferans Salonu" />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="capacity">Kontenjan</label>
-                <input type="number" id="capacity" name="capacity" min={1} max={1000} placeholder="Örn. 50" />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="description">Açıklama</label>
-                <textarea id="description" name="description" rows={5} placeholder="Etkinlik hakkında kısa bilgi..." />
-              </div>
-
-              <button type="submit" className="btn btn-primary">
-                {page === "update" ? "Güncelle" : "Kaydet"}
-              </button>
-            </form>
-          </div>
+          <EventForm mode={page} categories={categories} />
         )}
       </main>
 
-      <footer>
-        <p>Mehmet Ali Can Coşkun &middot; 2211012707 &middot; 2026</p>
-      </footer>
+      <Footer />
     </>
   );
 }
