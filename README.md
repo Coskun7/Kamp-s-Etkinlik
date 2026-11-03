@@ -1,11 +1,11 @@
-https://kampus-etkinlikleri-seven.vercel.app/
+https://kamp-s-etkinlik.vercel.app/
 
 # Kampüs Etkinlikleri
 
 Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Sprint 1, Sprint 2, Sprint 3, Sprint 4, Sprint 5 ve Sprint 6 (React Router & Context API) adımlarını içermektedir.
 
 ## Canlı Yayın Adresi
-- **Vercel Canlı Link:** [https://kampus-etkinlikleri-seven.vercel.app/](https://kampus-etkinlikleri-seven.vercel.app/)
+- **Vercel Canlı Link:** [https://kamp-s-etkinlik.vercel.app/](https://kamp-s-etkinlik.vercel.app/)
 
 ## Rotalar (10 Adet Route)
 | Yol (`path`) | Sayfa Bileşeni | Açıklama |
