@@ -1,39 +1,30 @@
+import { Link } from "react-router-dom";
 import type { CampusEvent } from "../../types/campus-event";
 import { formatDate } from "../../utils/format-date";
 
 interface EventDetailProps {
-  event: CampusEvent | undefined;
-  onBack: () => void;
-  onEdit: (id: string) => void;
+  event: CampusEvent;
 }
 
-function EventDetail({ event, onBack, onEdit }: EventDetailProps) {
-  if (!event) {
-    return (
-      <div className="hata-kutusu">
-        <p>Böyle bir etkinlik yok. Listeden bir etkinlik seçin.</p>
-        <div className="buton-grubu">
-          <button type="button" className="btn btn-secondary" onClick={onBack}>
-            ← Listeye dön
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+function EventDetail({ event }: EventDetailProps) {
   return (
-    <article className="detay-karti">
-      <div className={event.image ? "detay-grid" : undefined}>
+    <article className="detay">
+      <div className="detay-ust">
         {event.image && (
-          <figure className="afis-cerceve">
-            <img className="afis-resim" src={event.image} alt={`${event.title} afişi`} />
+          <figure>
+            <img
+              src={event.image}
+              alt={`${event.title} afişi`}
+              width="480"
+              height="270"
+            />
             <figcaption>{event.title} afişi</figcaption>
           </figure>
         )}
 
-        <div className="kunye-sutun">
+        <section className="kunye">
           <h2>Etkinlik Künyesi</h2>
-          <dl className="kunye-listesi">
+          <dl>
             <dt>Tarih</dt>
             <dd>
               <time dateTime={`${event.date}T${event.time}`}>
@@ -47,22 +38,20 @@ function EventDetail({ event, onBack, onEdit }: EventDetailProps) {
             <dt>Kontenjan</dt>
             <dd>{event.capacity} kişi</dd>
           </dl>
-        </div>
+        </section>
       </div>
 
-      <section className="aciklama-alani">
-        <h2>Açıklama</h2>
-        <p>{event.description}</p>
-      </section>
+      <h2>Açıklama</h2>
+      <p>{event.description}</p>
 
-      <div className="detay-eylemler">
-        <button type="button" className="btn btn-secondary" onClick={onBack}>
+      <p className="form-butonlar">
+        <Link className="buton" to="/events">
           ← Listeye dön
-        </button>
-        <button type="button" className="btn btn-primary" onClick={() => onEdit(event.id)}>
+        </Link>
+        <Link className="buton" to={`/admin/${event.id}/edit`}>
           Bu etkinliği güncelle
-        </button>
-      </div>
+        </Link>
+      </p>
     </article>
   );
 }

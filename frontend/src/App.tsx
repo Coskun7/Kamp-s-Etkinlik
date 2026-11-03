@@ -1,108 +1,38 @@
 import "./App.css";
-import { useEffect, useState } from "react";
-import type { Category } from "./types/campus-event";
-import type { PageName } from "./types/page";
-import { events } from "./data/events";
-import { filterByCategory, findEventById, searchEvents } from "./utils/filter-events";
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Navigation from "./components/layout/Navigation";
 import Footer from "./components/layout/Footer";
-import EventList from "./components/events/EventList";
-import EventFilter from "./components/events/EventFilter";
-import EventDetail from "./components/events/EventDetail";
-import EventForm from "./components/forms/EventForm";
-
-const categories = [...new Set(events.map((e) => e.category))];
+import HomePage from "./pages/HomePage";
+import EventsPage from "./pages/EventsPage";
+import EventDetailPage from "./pages/EventDetailPage";
+import AdminPage from "./pages/AdminPage";
+import NewEventPage from "./pages/NewEventPage";
+import EditEventPage from "./pages/EditEventPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
-  const [page, setPage] = useState<PageName>("home");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState("");
-  const [category, setCategory] = useState<Category | "">("");
-
-  function go(next: PageName, id: string | null = null) {
-    setPage(next);
-    setSelectedId(id);
-    window.scrollTo(0, 0);
-  }
-
-  const upcoming = [...events].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
-  const filtered = filterByCategory(searchEvents(events, searchText), category);
-  const selected = selectedId ? findEventById(events, selectedId) : undefined;
-
-  const titles: Record<PageName, string> = {
-    home: "Kampüs Etkinlikleri",
-    events: "Tüm Etkinlikler",
-    detail: selected ? selected.title : "Etkinlik bulunamadı",
-    add: "Etkinlik Ekle",
-    update: "Etkinlik Güncelle",
-  };
-  const subtitles: Record<PageName, string> = {
-    home: "Fakültedeki seminer, atölye ve söyleşileri tek yerden takip edin.",
-    events: "Ekim ayında kampüste düzenlenen etkinlikler.",
-    detail: "Etkinlik detayları ve künyesi.",
-    add: "Fakültede yeni bir etkinlik planlayın.",
-    update: "Mevcut etkinlik bilgilerini güncelleyin.",
-  };
-
-  useEffect(() => {
-    document.title = `Kampüs Etkinlikleri — ${titles[page]}`;
-  }, [titles, page]);
-
   return (
     <>
-      <Header title={titles[page]} text={subtitles[page]}>
-        <Navigation current={page} onNavigate={go} />
-      </Header>
-
+      <Header />
+      <Navigation />
       <main>
-        {page === "home" && (
-          <section>
-            <h2 className="section-title">Yaklaşan 2 Etkinlik</h2>
-            <EventList events={upcoming} onShowDetail={(id) => go("detail", id)} />
-            <div className="all-events-btn-wrapper">
-              <button type="button" className="btn btn-primary" onClick={() => go("events")}>
-                Tüm etkinlikleri gör
-              </button>
-            </div>
-          </section>
-        )}
-
-        {page === "events" && (
-          <>
-            <EventFilter
-              searchText={searchText}
-              category={category}
-              categories={categories}
-              onSearchChange={setSearchText}
-              onCategoryChange={setCategory}
-            />
-            <p id="sonuc">
-              {filtered.length === 0
-                ? "Aramanıza uygun etkinlik bulunamadı."
-                : `${filtered.length} etkinlik listeleniyor.`}
-            </p>
-            <EventList
-              events={filtered}
-              onShowDetail={(id) => go("detail", id)}
-              emptyText="Aramanıza uygun etkinlik bulunamadı."
-            />
-          </>
-        )}
-
-        {page === "detail" && (
-          <EventDetail
-            event={selected}
-            onBack={() => go("events")}
-            onEdit={(id) => go("update", id)}
-          />
-        )}
-
-        {(page === "add" || page === "update") && (
-          <EventForm onSubmit={() => window.scrollTo(0, 0)} />
-        )}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/new" element={<NewEventPage />} />
+          <Route path="/admin/:id/edit" element={<EditEventPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </main>
-
       <Footer />
     </>
   );
