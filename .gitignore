@@ -1,5 +1,6 @@
 # Ödev dokümanı depoya gitmez
 *.pdf
+Kontrol_listesi.png
 
 # Bağımlılıklar ve build çıktıları
 node_modules/
