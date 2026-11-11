@@ -2,12 +2,32 @@ https://kamp-s-etkinlik.vercel.app/
 
 # Kampüs Etkinlikleri
 
-Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Sprint 1, Sprint 2, Sprint 3, Sprint 4, Sprint 5 ve Sprint 6 (React Router & Context API) adımlarını içermektedir.
+Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Frontend (React, Vite, TypeScript, React Router, Context API) ve Backend (Sprint 7 - Node.js, Express, REST API) adımlarını içermektedir.
 
 ## Canlı Yayın Adresi
-- **Vercel Canlı Link:** [https://kamp-s-etkinlik.vercel.app/](https://kamp-s-etkinlik.vercel.app/)
+- **Vercel Canlı Link (Frontend):** [https://kamp-s-etkinlik.vercel.app/](https://kamp-s-etkinlik.vercel.app/)
 
-## Rotalar (10 Adet Route)
+## Sprint 7 · Backend REST API
+Bu sprintte `backend/` klasöründe Express tabanlı bağımsız bir REST API servisi geliştirilmiştir:
+- **Port:** `.env` üzerinden okunur (Varsayılan: `3000`). `.env.example` mevcuttur.
+- **Health-Check:** `GET /health` -> `{ "status": "ok", "time": "...", "student": "2211012707" }`
+- **Etkinlik Listesi:** `GET /events` (isteğe bağlı `?category=` filtresi)
+- **Tekil Etkinlik:** `GET /events/:id` (bulunamazsa `404` `{ error: { message: "Event not found" } }`)
+- **Yeni Etkinlik:** `POST /events` (başarılıysa `201`, eksik alanda `400` `{ error: { message: "title, category and date are required" } }`)
+- **Postman Test Koleksiyonu:** `backend/requests/kampus-api.json` (6 adet otomatik test isteği)
+
+### Backend REST Sözleşmesi
+
+| Method | Endpoint | Amaç | Başarılı | Hata | Durum |
+|---|---|---|---|---|---|
+| GET | `/health` | Sunucu sağlık kontrolü ve öğrenci no | 200 | - | Sprint 7 |
+| GET | `/events` | Listeyi getir (`?category=` opsiyonel) | 200 | - | Sprint 7 |
+| GET | `/events/:id` | Tek etkinlik getir | 200 | 404 | Sprint 7 |
+| POST | `/events` | Yeni etkinlik ekle | 201 | 400 | Sprint 7 |
+| PATCH | `/events/:id` | Etkinlik güncelle | 200 | 400, 404 | Sprint 9 |
+| DELETE | `/events/:id` | Etkinlik sil | 204 | 404 | Sprint 9 |
+
+## Rotalar (Frontend - 10 Adet Route)
 | Yol (`path`) | Sayfa Bileşeni | Açıklama |
 |---|---|---|
 | `/` | `HomePage.tsx` | Yaklaşan 2 etkinliği ve tüm etkinliklere geçiş butonunu gösterir. |
@@ -21,53 +41,57 @@ Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Sprint 1, Sprint 2, Sp
 | `/forgot-password` | `ForgotPasswordPage.tsx` | E-posta doğrulamalı şifre sıfırlama bağlantısı gönderme sayfası. |
 | `*` | `NotFoundPage.tsx` | Bulunamayan sayfa veya etkinlikler için 404 görünümü. |
 
-## Klasör ve Dosya Yapısı (`frontend/src/`)
+## Repo Yapısı
 ```text
-src/
-├── components/
-│   ├── events/
-│   │   ├── EventCard.tsx
-│   │   ├── EventDetail.tsx
-│   │   ├── EventFilter.tsx
-│   │   └── EventList.tsx
-│   ├── forms/
-│   │   └── EventForm.tsx
-│   └── layout/
-│       ├── Footer.tsx
-│       ├── Header.tsx
-│       └── Navigation.tsx
-├── context/
-│   └── EventsContext.tsx
-├── data/
-│   └── events.ts
-├── pages/
-│   ├── AdminPage.tsx
-│   ├── EditEventPage.tsx
-│   ├── EventDetailPage.tsx
-│   ├── EventsPage.tsx
-│   ├── ForgotPasswordPage.tsx
-│   ├── HomePage.tsx
-│   ├── LoginPage.tsx
-│   ├── NewEventPage.tsx
-│   ├── NotFoundPage.tsx
-│   └── RegisterPage.tsx
-├── types/
-│   └── campus-event.ts
-├── utils/
-│   ├── filter-events.ts
-│   └── format-date.ts
-├── App.css
-├── App.tsx
-├── index.css
-└── main.tsx
+kampus-etkinlik/
+├── backend/
+│   ├── requests/
+│   │   └── kampus-api.json
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   └── event-controller.js
+│   │   ├── data/
+│   │   │   └── events.js
+│   │   ├── routes/
+│   │   │   └── event-routes.js
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   └── README.md
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── data/
+│   │   ├── pages/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── package.json
+│   └── vite.config.ts
+└── README.md
 ```
 
 ## Çalıştırma
+
+### Frontend
 ```bash
 cd frontend
 npm install
 npm run dev     # http://localhost:5173
 npm run build
+```
+
+### Backend (Sprint 7)
+```bash
+cd backend
+npm install
+npm run dev     # http://localhost:3000 (node --watch src/server.js)
+npm start
 ```
 
 ## Öğrenci Bilgileri
