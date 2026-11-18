@@ -54,3 +54,4 @@ export const seedEvents = [
     description: "Bulut altyapıları, sunucusuz mimariler ve yüksek erişilebilirlik ilkelerinin ele alınacağı teknik seminer.",
   },
 ];
+

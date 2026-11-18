@@ -10,3 +10,4 @@ export async function connectDatabase() {
   const yer = uri.startsWith("mongodb+srv://") ? "Atlas" : "yerel";
   console.log(`MongoDB bağlandı (${yer}): ${host}/${name}`);
 }
+

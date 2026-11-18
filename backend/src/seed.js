@@ -9,3 +9,4 @@ await Event.deleteMany({});
 const created = await Event.insertMany(seedEvents);
 console.log(`${created.length} etkinlik eklendi`);
 await mongoose.disconnect();
+
