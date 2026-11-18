@@ -1,5 +1,6 @@
 # Ödev dokümanı depoya gitmez
 *.pdf
+Kontrol*.png
 Kontrol_listesi.png
 
 # Bağımlılıklar ve build çıktıları
