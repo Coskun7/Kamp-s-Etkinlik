@@ -49,7 +49,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/events/event-2",
+					"raw": "http://localhost:3000/events/6af57ce53e43add8c80ecd0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -57,7 +57,7 @@
 					"port": "3000",
 					"path": [
 						"events",
-						"event-2"
+						"6af57ce53e43add8c80ecd0"
 					]
 				}
 			},
@@ -69,7 +69,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/events/yok",
+					"raw": "http://localhost:3000/events/111111",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -77,7 +77,7 @@
 					"port": "3000",
 					"path": [
 						"events",
-						"yok"
+						"111111"
 					]
 				}
 			},
@@ -96,7 +96,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"title\": \"Git Atölyesi\",\n  \"category\": \"Atölye\",\n  \"date\": \"2026-12-01\",\n  \"capacity\": 30,\n  \"time\": \"14:00\",\n  \"location\": \"Bilgisayar Lab 1\",\n  \"description\": \"Temel Git ve GitHub kullanımı üzerine uygulamalı atölye.\"\n}",
+					"raw": "{\n  \"title\": \"Git Atölyesi\",\n  \"category\": \"Atölye\",\n  \"date\": \"2026-12-01\",\n  \"time\": \"14:00\",\n  \"location\": \"Bilgisayar Laboratuvarı 1\",\n  \"capacity\": 30,\n  \"description\": \"Git ve GitHub ile ilk adımlar.\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -130,7 +130,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"title\": \"Sadece Başlık\"\n}",
+					"raw": "{\n  \"title\": \"Git Atölyesi\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

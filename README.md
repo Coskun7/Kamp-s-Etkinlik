@@ -2,28 +2,31 @@ https://kamp-s-etkinlik.vercel.app/
 
 # Kampüs Etkinlikleri
 
-Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Frontend (React, Vite, TypeScript, React Router, Context API) ve Backend (Sprint 7 - Node.js, Express, REST API) adımlarını içermektedir.
+Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Frontend (React, Vite, TypeScript, React Router, Context API) ve Backend (Sprint 7 & Sprint 8 - Node.js, Express, MongoDB, Mongoose, REST API) adımlarını içermektedir.
 
 ## Canlı Yayın Adresi
 - **Vercel Canlı Link (Frontend):** [https://kamp-s-etkinlik.vercel.app/](https://kamp-s-etkinlik.vercel.app/)
 
-## Sprint 7 · Backend REST API
-Bu sprintte `backend/` klasöründe Express tabanlı bağımsız bir REST API servisi geliştirilmiştir:
-- **Port:** `.env` üzerinden okunur (Varsayılan: `3000`). `.env.example` mevcuttur.
+## Sprint 8 · Kalıcı Veri (MongoDB ve Mongoose)
+Bu sprintte `backend/` klasöründe MongoDB ve Mongoose ile kalıcı veri mimarisine geçilmiştir:
+- **Veritabanı:** MongoDB Atlas / Yerel MongoDB (`MONGODB_URI` ortam değişkeni ile).
+- **Mongoose Modeli:** `Event` şeması (`title`, `category`, `capacity`, `date`, `time`, `location`, `description`, `timestamps`).
+- **Seed Scripti:** `npm run seed` (`src/seed.js`) komutu ile örnek 6 etkinlik veritabanına eklenir.
 - **Health-Check:** `GET /health` -> `{ "status": "ok", "time": "...", "student": "2211012707" }`
-- **Etkinlik Listesi:** `GET /events` (isteğe bağlı `?category=` filtresi)
-- **Tekil Etkinlik:** `GET /events/:id` (bulunamazsa `404` `{ error: { message: "Event not found" } }`)
-- **Yeni Etkinlik:** `POST /events` (başarılıysa `201`, eksik alanda `400` `{ error: { message: "title, category and date are required" } }`)
-- **Postman Test Koleksiyonu:** `backend/requests/kampus-api.json` (6 adet otomatik test isteği)
+- **Etkinlik Listesi:** `GET /events` (MongoDB'den tarihe göre sıralı, isteğe bağlı `?category=` filtresi)
+- **Tekil Etkinlik:** `GET /events/:id` (MongoDB `_id` ile bulma; geçersiz veya bulunamayan id için `404` `{ error: { message: "Event not found" } }`)
+- **Yeni Etkinlik:** `POST /events` (Mongoose ile oluşturma `201`, şema doğrulama hatasında `400`)
+- **Hata Yakalayıcı:** Merkezi hata middleware'i (`500 Server error`) ile sunucu çökmesi engellenir.
+- **Postman Test Koleksiyonu:** `backend/requests/kampus-api.json` (Sprint 8 MongoDB ve `_id` uyumlu 6 test isteği)
 
 ### Backend REST Sözleşmesi
 
 | Method | Endpoint | Amaç | Başarılı | Hata | Durum |
 |---|---|---|---|---|---|
-| GET | `/health` | Sunucu sağlık kontrolü ve öğrenci no | 200 | - | Sprint 7 |
-| GET | `/events` | Listeyi getir (`?category=` opsiyonel) | 200 | - | Sprint 7 |
-| GET | `/events/:id` | Tek etkinlik getir | 200 | 404 | Sprint 7 |
-| POST | `/events` | Yeni etkinlik ekle | 201 | 400 | Sprint 7 |
+| GET | `/health` | Sunucu sağlık kontrolü ve öğrenci no | 200 | - | Sprint 7/8 |
+| GET | `/events` | Listeyi getir (`?category=` opsiyonel) | 200 | - | Sprint 8 |
+| GET | `/events/:id` | Tek etkinlik getir (MongoDB `_id` ile) | 200 | 404 | Sprint 8 |
+| POST | `/events` | Yeni etkinlik ekle (MongoDB kalıcı) | 201 | 400 | Sprint 8 |
 | PATCH | `/events/:id` | Etkinlik güncelle | 200 | 400, 404 | Sprint 9 |
 | DELETE | `/events/:id` | Etkinlik sil | 204 | 404 | Sprint 9 |
 
@@ -48,13 +51,18 @@ kampus-etkinlik/
 │   ├── requests/
 │   │   └── kampus-api.json
 │   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js
 │   │   ├── controllers/
 │   │   │   └── event-controller.js
 │   │   ├── data/
-│   │   │   └── events.js
+│   │   │   └── seed-events.js
+│   │   ├── models/
+│   │   │   └── event-model.js
 │   │   ├── routes/
 │   │   │   └── event-routes.js
 │   │   ├── app.js
+│   │   ├── seed.js
 │   │   └── server.js
 │   ├── .env.example
 │   ├── .gitignore
@@ -62,15 +70,6 @@ kampus-etkinlik/
 │   └── README.md
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── data/
-│   │   ├── pages/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── App.css
-│   │   ├── App.tsx
-│   │   └── main.tsx
 │   ├── package.json
 │   └── vite.config.ts
 └── README.md
@@ -86,11 +85,12 @@ npm run dev     # http://localhost:5173
 npm run build
 ```
 
-### Backend (Sprint 7)
+### Backend (Sprint 8)
 ```bash
 cd backend
 npm install
-npm run dev     # http://localhost:3000 (node --watch src/server.js)
+npm run seed    # MongoDB'ye 6 örnek etkinliği ekler
+npm run dev     # node --watch src/server.js
 npm start
 ```
 
