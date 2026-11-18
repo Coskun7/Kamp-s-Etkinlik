@@ -1,6 +1,5 @@
-export const events = [
+export const seedEvents = [
   {
-    id: "event-1",
     title: "Yapay Zekâ ve Büyük Dil Modelleri Semineri",
     category: "Seminer",
     capacity: 120,
@@ -10,7 +9,6 @@ export const events = [
     description: "Derin öğrenme mimarileri, transformatör modelleri ve endüstriyel yapay zekâ uygulamaları üzerine kapsamlı bir seminer.",
   },
   {
-    id: "event-2",
     title: "Mikroservisler ve Docker ile Konteynerizasyon Atölyesi",
     category: "Atölye",
     capacity: 25,
@@ -20,7 +18,6 @@ export const events = [
     description: "Docker, Docker Compose ve mikroservis mimarileri ile uygulamalı backend dağıtım atölyesi.",
   },
   {
-    id: "event-3",
     title: "Yazılım Sektöründe Kariyer ve Açık Kaynak Söyleşisi",
     category: "Söyleşi",
     capacity: 60,
@@ -30,7 +27,6 @@ export const events = [
     description: "Kıdemli yazılım mühendisleri ile teknoloji sektöründeki kariyer fırsatları ve açık kaynak katkısı üzerine samimi bir söyleşi.",
   },
   {
-    id: "event-4",
     title: "Modern Web Güvenliği ve OWASP Atölyesi",
     category: "Atölye",
     capacity: 30,
@@ -40,7 +36,6 @@ export const events = [
     description: "Web uygulamalarında yaygın güvenlik açıkları, XSS, CSRF, SQL enjeksiyonu ve güvenli kodlama pratikleri.",
   },
   {
-    id: "event-5",
     title: "Kampüs İnovasyon ve Algoritma Yarışması",
     category: "Yarışma",
     capacity: 16,
@@ -50,7 +45,6 @@ export const events = [
     description: "Öğrenci takımlarının veri yapıları ve algoritmik problem çözme yeteneklerini sergileyeceği 6 saatlik kodlama yarışması.",
   },
   {
-    id: "event-6",
     title: "Bulut Bilişim ve Dağıtık Sistemler Semineri",
     category: "Seminer",
     capacity: 90,
