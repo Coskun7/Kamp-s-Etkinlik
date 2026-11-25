@@ -2,22 +2,29 @@ https://kamp-s-etkinlik.vercel.app/
 
 # Kampüs Etkinlikleri
 
-Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Frontend (React, Vite, TypeScript, React Router, Context API) ve Backend (Sprint 7 & Sprint 8 - Node.js, Express, MongoDB, Mongoose, REST API) adımlarını içermektedir.
+Bu depo, Üniversite Kampüs Etkinlikleri uygulamasının Frontend (React, Vite, TypeScript, React Router, Context API) ve Backend (Sprint 7, Sprint 8 & Sprint 9 - Tam CRUD, Node.js, Express, MongoDB, Mongoose, REST API) adımlarını içermektedir.
 
 ## Canlı Yayın Adresi
 - **Vercel Canlı Link (Frontend):** [https://kamp-s-etkinlik.vercel.app/](https://kamp-s-etkinlik.vercel.app/)
 
+## Sprint 9 · Tam CRUD (PATCH, DELETE, Arama ve Yaklaşan Etkinlikler)
+Bu sprintte `backend/` servisinde tam CRUD kabiliyeti, gelişmiş arama ve tarih temelli listeleme mekanizmaları hayata geçirilmiştir:
+- **Tarih Standardı (`GG-AA-YYYY`):** API arayüzünde `"15-10-2026"` biçiminde metin olarak iletilen tarihler, veritabanında gerçek BSON `Date` olarak saklanır (`src/utils/date.js` modülündeki `parseDate`, `formatDate` getter/setter ve `todayStart()` fonksiyonları ile).
+- **Kısmi Güncelleme (`PATCH /events/:id`):** Sadece gönderilen alanlar güncellenir (`returnDocument: "after"`). `runValidators: true` ile şema kuralları işletilir; `_id`, `createdAt`, `updatedAt`, `__v` gibi korunan alanlar değiştirilemez (`400 Bad Request`). Boş gövde gönderildiğinde `400 Bad Request` yanıtı verilir.
+- **Güvenli Silme (`DELETE /events/:id`):** Kayıt silindiğinde `204 No Content` (boş gövde) döner. Aynı kayıt tekrar silinmeye çalışıldığında `404 Not Found` yanıtı verilir.
+- **Arama ve Kategori Filtresi (`GET /events?search=&category=`):** Başlıkta büyük/küçük harf duyarsız arama (`$regex`, `$options: "i"`) ve kategori filtreleme özellikleri tek veya birlikte çalışacak şekilde sunulur. Özel regex karakterleri kaçırılarak güvenli arama sağlanmıştır.
+- **Yaklaşan Etkinlikler (`GET /events/upcoming`):** Bugünün başından itibaren (`$gte: todayStart()`) gelecekteki etkinlikler en yakından uzağa doğru kronolojik sırada (`sort({ date: 1, time: 1 })`) listelenir. Rota çakışmasını engellemek için `/:id` rotasından önce tanımlanmıştır.
+- **Postman & Newman Doğrulaması:** 18 istek ve 45 testten oluşan resmi test koleksiyonu (`backend/requests/kampus-api.json`) çalıştırılmış, tüm testlerin başarıyla geçtiği (`45/45 yeşil, 0 hata`) `backend/requests/run-results.json` dosyasına işlenmiştir.
+
 ## Sprint 8 · Kalıcı Veri (MongoDB ve Mongoose)
-Bu sprintte `backend/` klasöründe MongoDB ve Mongoose ile kalıcı veri mimarisine geçilmiştir:
 - **Veritabanı:** MongoDB Atlas / Yerel MongoDB (`MONGODB_URI` ortam değişkeni ile).
 - **Mongoose Modeli:** `Event` şeması (`title`, `category`, `capacity`, `date`, `time`, `location`, `description`, `timestamps`).
-- **Seed Scripti:** `npm run seed` (`src/seed.js`) komutu ile örnek 6 etkinlik veritabanına eklenir.
+- **Seed Scripti:** `npm run seed` (`src/seed.js`) komutu ile örnek 6 etkinlik veritabanına eklenir (geçmiş ve gelecek tarihli etkinlikler içerir).
 - **Health-Check:** `GET /health` -> `{ "status": "ok", "time": "...", "student": "2211012707" }`
-- **Etkinlik Listesi:** `GET /events` (MongoDB'den tarihe göre sıralı, isteğe bağlı `?category=` filtresi)
+- **Etkinlik Listesi:** `GET /events` (MongoDB'den tarihe göre sıralı, isteğe bağlı filtreler)
 - **Tekil Etkinlik:** `GET /events/:id` (MongoDB `_id` ile bulma; geçersiz veya bulunamayan id için `404` `{ error: { message: "Event not found" } }`)
 - **Yeni Etkinlik:** `POST /events` (Mongoose ile oluşturma `201`, şema doğrulama hatasında `400`)
 - **Hata Yakalayıcı:** Merkezi hata middleware'i (`500 Server error`) ile sunucu çökmesi engellenir.
-- **Postman Test Koleksiyonu:** `backend/requests/kampus-api.json` (Sprint 8 MongoDB ve `_id` uyumlu 6 test isteği)
 
 ### Backend REST Sözleşmesi
 
@@ -50,7 +57,8 @@ Bu sprintte `backend/` klasöründe MongoDB ve Mongoose ile kalıcı veri mimari
 kampus-etkinlik/
 ├── backend/
 │   ├── requests/
-│   │   └── kampus-api.json
+│   │   ├── kampus-api.json
+│   │   └── run-results.json
 │   ├── src/
 │   │   ├── config/
 │   │   │   └── database.js
@@ -62,6 +70,8 @@ kampus-etkinlik/
 │   │   │   └── event-model.js
 │   │   ├── routes/
 │   │   │   └── event-routes.js
+│   │   ├── utils/
+│   │   │   └── date.js
 │   │   ├── app.js
 │   │   ├── seed.js
 │   │   └── server.js
@@ -86,13 +96,16 @@ npm run dev     # http://localhost:5173
 npm run build
 ```
 
-### Backend (Sprint 8)
+### Backend (Sprint 9)
 ```bash
 cd backend
 npm install
-npm run seed    # MongoDB'ye 6 örnek etkinliği ekler
-npm run dev     # node --watch src/server.js
-npm start
+npm run seed    # Örnek etkinlikleri veritabanına ekler
+npm run dev     # node --watch src/server.js ile geliştirme modunda başlatır
+npm start       # Üretim modu
+
+# Masada / Yerel Test Komutu (Backend açıkken yeni bir terminalde):
+npx newman run https://webdersi.vercel.app/test.json
 ```
 
 ## Öğrenci Bilgileri
