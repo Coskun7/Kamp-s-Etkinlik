@@ -23,12 +23,13 @@ Bu sprintte `backend/` klasöründe MongoDB ve Mongoose ile kalıcı veri mimari
 
 | Method | Endpoint | Amaç | Başarılı | Hata | Durum |
 |---|---|---|---|---|---|
-| GET | `/health` | Sunucu sağlık kontrolü ve öğrenci no | 200 | - | Sprint 7/8 |
-| GET | `/events` | Listeyi getir (`?category=` opsiyonel) | 200 | - | Sprint 8 |
-| GET | `/events/:id` | Tek etkinlik getir (MongoDB `_id` ile) | 200 | 404 | Sprint 8 |
-| POST | `/events` | Yeni etkinlik ekle (MongoDB kalıcı) | 201 | 400 | Sprint 8 |
-| PATCH | `/events/:id` | Etkinlik güncelle | 200 | 400, 404 | Sprint 9 |
-| DELETE | `/events/:id` | Etkinlik sil | 204 | 404 | Sprint 9 |
+| GET | `/health` | Sunucu sağlık kontrolü ve öğrenci no | 200 | - | çalışıyor |
+| GET | `/events` | Listeyi getir (`?search=` ve `?category=` filtreleri) | 200 | - | çalışıyor |
+| GET | `/events/upcoming` | Yaklaşan etkinlikleri tarihe göre sıralı getir | 200 | - | çalışıyor |
+| GET | `/events/:id` | Tek etkinlik getir (MongoDB `_id` ile) | 200 | 404 | çalışıyor |
+| POST | `/events` | Yeni etkinlik ekle (MongoDB kalıcı) | 201 | 400 | çalışıyor |
+| PATCH | `/events/:id` | Etkinlik güncelle (sadece gönderilen alanlar) | 200 | 400, 404 | çalışıyor |
+| DELETE | `/events/:id` | Etkinlik sil (gövde yok) | 204 | 404 | çalışıyor |
 
 ## Rotalar (Frontend - 10 Adet Route)
 | Yol (`path`) | Sayfa Bileşeni | Açıklama |
